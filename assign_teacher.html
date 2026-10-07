@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сабак дайындоо | Куран жаттатуу борбору</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: Arial, sans-serif; background: #f4f7f6; color: #1f2937; }
+        .page-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 270px; background: #0f5132; color: white; padding: 25px 18px; position: fixed; left: 0; top: 0; bottom: 0; overflow-y: auto; }
+        .brand { text-align: center; padding-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.18); margin-bottom: 20px; }
+        .brand-logo { width: 95px; height: 95px; object-fit: contain; display: block; margin: 0 auto 15px; }
+        .brand h2 { font-size: 17px; line-height: 1.5; margin: 0; }
+        .brand p { font-size: 13px; opacity: 0.75; margin: 10px 0 0; }
+        .menu-title { font-size: 12px; opacity: 0.6; margin: 22px 10px 8px; }
+        .menu-link { display: block; color: white; text-decoration: none; padding: 13px 15px; margin: 6px 0; border-radius: 10px; transition: 0.2s; }
+        .menu-link:hover { background: rgba(255,255,255,0.13); transform: translateX(3px); }
+        .menu-link.active { background: white; color: #0f5132; font-weight: bold; }
+        .logout { background: #8b1e1e; margin-top: 25px; }
+        .logout:hover { background: #a92525; }
+        .main { margin-left: 270px; width: calc(100% - 270px); padding: 30px; }
+        .page-header { background: white; border: 1px solid #e5e7eb; border-radius: 18px; padding: 25px 30px; margin-bottom: 25px; }
+        .page-header h1 { margin: 0; color: #0f5132; font-size: 28px; }
+        .page-header p { margin: 8px 0 0; color: #6b7280; }
+        .form-card { max-width: 850px; background: white; border: 1px solid #e5e7eb; border-radius: 18px; padding: 30px; }
+        .form-title { margin: 0 0 7px; color: #0f5132; font-size: 21px; }
+        .form-description { margin: 0 0 25px; color: #6b7280; font-size: 14px; }
+        .info-box { background: #f0f7f3; border: 1px solid #dcebe3; border-left: 4px solid #0f5132; padding: 15px 17px; border-radius: 10px; margin-bottom: 25px; color: #374151; line-height: 1.5; }
+        .form-group { margin-bottom: 22px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #374151; }
+        .form-group select { display: block; width: 100%; padding: 13px 14px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 15px; background: white; color: #1f2937; outline: none; transition: 0.2s; }
+        .form-group select:focus { border-color: #0f5132; box-shadow: 0 0 0 3px rgba(15,81,50,0.10); }
+        .form-help { display: block; margin-top: 6px; color: #6b7280; font-size: 12px; }
+        .btn { display: inline-block; border: none; padding: 13px 22px; border-radius: 10px; background: #0f5132; color: white; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn:hover { background: #0b4027; transform: translateY(-1px); }
+        .back-button { display: inline-block; margin-top: 20px; background: #f3f4f6; color: #374151; padding: 12px 18px; border-radius: 10px; text-decoration: none; font-weight: bold; }
+        .back-button:hover { background: #e5e7eb; }
+        .selection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
+        .selection-card { background: #f8faf9; border: 1px solid #e2e8e4; border-radius: 12px; padding: 15px; }
+        .selection-card strong { display: block; color: #0f5132; margin-bottom: 5px; }
+        .selection-card span { font-size: 12px; color: #6b7280; }
+        @media (max-width: 900px) { .sidebar { width: 220px; } .main { margin-left: 220px; width: calc(100% - 220px); padding: 20px; } .selection-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 650px) { .page-layout { display: block; } .sidebar { position: relative; width: 100%; min-height: auto; } .main { margin-left: 0; width: 100%; padding: 15px; } .form-card, .page-header { padding: 20px; } .page-header h1 { font-size: 23px; } }
+    </style>
+</head>
+<body>
+<div class="page-layout">
+    <aside class="sidebar">
+        <div class="brand">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Логотип" class="brand-logo">
+            <h2>Кыргызстан Ислам Университети<br>Ош колледжи<br>Куран жаттатуу борбору</h2>
+            <p>Башкаруу системасы</p>
+        </div>
+        <div class="menu-title">Башкы меню</div>
+        <a href="{{ url_for('admin') }}" class="menu-link">🏠 Башкы бет</a>
+        <a href="{{ url_for('students') }}" class="menu-link">👨‍🎓 Студенттер</a>
+        <a href="{{ url_for('parents') }}" class="menu-link">👨‍👩‍👦 Ата-энелер</a>
+        <div class="menu-title">Башкаруу</div>
+        <a href="{{ url_for('add_teacher') }}" class="menu-link">👨‍🏫 Мугалим кошуу</a>
+        <a href="{{ url_for('assign_teacher') }}" class="menu-link active">📚 Сабак дайындоо</a>
+        <a href="{{ url_for('quran_sections') }}" class="menu-link">📖 Куран бөлүмдөрү</a>
+        <a href="{{ url_for('logout') }}" class="menu-link logout">🚪 Чыгуу</a>
+    </aside>
+
+    <main class="main">
+        <header class="page-header">
+            <h1>📚 Мугалимге сабак дайындоо</h1>
+            <p>Мугалимге курс жана сабак бекитүү</p>
+        </header>
+
+        <section class="form-card">
+            <h2 class="form-title">🔗 Сабакты дайындоо</h2>
+            <p class="form-description">Мугалимди, курсту жана сабакты тандап, алардын байланышын түзүңүз.</p>
+
+            <div class="info-box">
+                💡 Мугалимди, курсту жана сабакты тандаңыз. Андан кийин <strong>«Сабакты дайындоо»</strong> баскычын басыңыз.
+            </div>
+
+            <div class="selection-grid">
+                <div class="selection-card"><strong>👨‍🏫 Мугалим</strong><span>Сабак өтө турган мугалим</span></div>
+                <div class="selection-card"><strong>🎓 Курс</strong><span>Мугалимге бекитиле турган курс</span></div>
+                <div class="selection-card"><strong>📖 Сабак</strong><span>Окутула турган предмет</span></div>
+            </div>
+
+            <form method="POST">
+                <div class="form-group">
+                    <label for="teacher_id">👨‍🏫 Мугалим</label>
+                    <select id="teacher_id" name="teacher_id" required>
+                        <option value="">-- Мугалимди тандаңыз --</option>
+                        {% for teacher in teachers %}
+                            <option value="{{ teacher['id'] }}">{{ teacher['name'] }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="form-help">Сабак өтө турган мугалимди тандаңыз.</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="course_id">🎓 Курс</label>
+                    <select id="course_id" name="course_id" required>
+                        <option value="">-- Курсту тандаңыз --</option>
+                        {% for course in courses %}
+                            <option value="{{ course['id'] }}">{{ course['name'] }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="form-help">Мугалим кайсы курстун студенттери менен иштей турганын тандаңыз.</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="subject_id">📖 Сабак</label>
+                    <select id="subject_id" name="subject_id" required>
+                        <option value="">-- Сабакты тандаңыз --</option>
+                        {% for subject in subjects %}
+                            <option value="{{ subject['id'] }}">{{ subject['name'] }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="form-help">Мугалим өтө турган предметти тандаңыз.</span>
+                </div>
+
+                <button type="submit" class="btn">✅ Сабакты дайындоо</button>
+            </form>
+
+            <a href="{{ url_for('admin') }}" class="back-button">← Админ панелине кайтуу</a>
+        </section>
+    </main>
+</div>
+</body>
+</html>

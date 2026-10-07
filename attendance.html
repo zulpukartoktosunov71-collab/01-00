@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Катышуу жана баа | Куран жаттатуу борбору</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #f4f7f6; color: #17372c; }
+        .page { min-height: 100vh; padding: 30px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #087653, #0b8a63); color: white; border-radius: 20px; padding: 28px 30px; margin-bottom: 22px; }
+        .header-content { display: flex; align-items: center; gap: 18px; }
+        .logo { width: 72px; height: 72px; object-fit: contain; background: white; border-radius: 14px; padding: 6px; flex-shrink: 0; }
+        .header h1 { margin: 0 0 8px; font-size: 27px; }
+        .header h2 { margin: 0 0 7px; font-size: 20px; font-weight: 600; }
+        .header p { margin: 4px 0; font-size: 14px; opacity: .92; }
+        .section { background: white; border: 1px solid #e0e9e5; border-radius: 18px; padding: 25px; margin-bottom: 20px; }
+        .section-title { margin: 0 0 20px; color: #123c2e; font-size: 20px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 17px; }
+        .form-group { margin-bottom: 5px; }
+        .full { grid-column: 1 / -1; }
+        label { display: block; margin-bottom: 7px; color: #355b4e; font-size: 13px; font-weight: 700; }
+        input, select, textarea { width: 100%; border: 1px solid #d6e2dd; border-radius: 10px; padding: 13px 14px; background: white; color: #17372c; font-family: inherit; font-size: 14px; outline: none; }
+        textarea { resize: vertical; min-height: 100px; }
+        input:focus, select:focus, textarea:focus { border-color: #087653; box-shadow: 0 0 0 3px rgba(8, 118, 83, .08); }
+        .save-button { grid-column: 1 / -1; border: none; border-radius: 10px; padding: 14px; background: #087653; color: white; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+        .save-button:hover { background: #065e43; }
+        .table-wrapper { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        th { padding: 14px 12px; background: #f2f7f5; color: #426257; text-align: left; font-size: 12px; white-space: nowrap; }
+        td { padding: 14px 12px; border-bottom: 1px solid #edf1ef; font-size: 13px; vertical-align: middle; }
+        tbody tr:hover { background: #fafcfb; }
+        .number { color: #7c8a84; font-weight: 600; }
+        .status { display: inline-block; padding: 6px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+        .present { background: #e9f7ef; color: #087653; }
+        .absent { background: #fdeeee; color: #b33a3a; }
+        .grade { display: inline-block; padding: 5px 9px; border-radius: 8px; background: #f8f2e8; color: #896b31; font-weight: 700; }
+        .no-data { color: #9aa6a1; }
+        .empty { text-align: center; padding: 35px 20px; color: #7b8983; }
+        .empty-icon { font-size: 42px; margin-bottom: 10px; }
+        .empty p { margin: 0; font-size: 14px; }
+        .back { display: inline-block; padding: 12px 18px; border-radius: 10px; background: white; border: 1px solid #dfe8e4; color: #087653; text-decoration: none; font-size: 13px; font-weight: 700; }
+        .back:hover { background: #edf8f3; }
+        @media (max-width: 700px) { .page { padding: 15px; } .header { padding: 22px; } .header-content { align-items: flex-start; } .logo { width: 58px; height: 58px; } .header h1 { font-size: 22px; } .header h2 { font-size: 17px; } .section { padding: 18px; } .form-grid { grid-template-columns: 1fr; } .full, .save-button { grid-column: auto; } }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Логотип" class="logo">
+                <div>
+                    <h1>📝 Катышуу жана баа</h1>
+                    <h2>{{ student["name"] }}</h2>
+                    <p>📚 {{ assignment["subject_name"] }}</p>
+                    <p>🎓 {{ assignment["course_name"] }}</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="section">
+            <h2 class="section-title">➕ Жаңы катышуу жана баа</h2>
+            <form action="{{ url_for('teacher_attendance', assignment_id=assignment['id'], student_id=student['id']) }}" method="POST">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>📅 Сабактын датасы</label>
+                        <input type="date" name="lesson_date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>📌 Катышуусу</label>
+                        <select name="attendance" required>
+                            <option value="Катышты">✅ Катышты</option>
+                            <option value="Катышкан жок">❌ Катышкан жок</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>⭐ Баасы</label>
+                        <select name="grade">
+                            <option value="">-- Баа жок --</option>
+                            <option value="5">5 — Абдан жакшы</option>
+                            <option value="4">4 — Жакшы</option>
+                            <option value="3">3 — Канааттандырарлык</option>
+                            <option value="2">2 — Начар</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full">
+                        <label>📝 Эскертүү</label>
+                        <textarea name="note" placeholder="Мисалы: Сабакты жакшы өздөштүрдү..."></textarea>
+                    </div>
+
+                    <button type="submit" class="save-button">💾 Маалыматты сактоо</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">📋 Катышуу жана баа тарыхы</h2>
+            {% if attendance_history %}
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Дата</th>
+                                <th>Катышуусу</th>
+                                <th>Баасы</th>
+                                <th>Эскертүү</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in attendance_history %}
+                                <tr>
+                                    <td class="number">{{ loop.index }}</td>
+                                    <td>{{ record["lesson_date"] }}</td>
+                                    <td>
+                                        {% if record["attendance"] == "Катышты" %}
+                                            <span class="status present">✅ Катышты</span>
+                                        {% else %}
+                                            <span class="status absent">❌ Катышкан жок</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if record["grade"] %}
+                                            <span class="grade">⭐ {{ record["grade"] }}</span>
+                                        {% else %}
+                                            <span class="no-data">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if record["note"] %}
+                                            {{ record["note"] }}
+                                        {% else %}
+                                            <span class="no-data">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty">
+                    <div class="empty-icon">📋</div>
+                    <p>Азырынча катышуу жана баа тарыхы жок.</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <a href="{{ url_for('teacher_students', assignment_id=assignment['id']) }}" class="back">← Студенттерге кайтуу</a>
+    </div>
+</div>
+</body>
+</html>

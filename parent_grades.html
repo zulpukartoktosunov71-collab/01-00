@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Студенттин баалары</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+        h1 {
+            color: #073b2b;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #edf7f3;
+            color: #073b2b;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            color: #087653;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📊 Баалар журналы</h1>
+
+    {% if grades %}
+    <table>
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Сабак / Тема</th>
+                <th>Баасы</th>
+                <th>Мугалимдин комментарийи</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for grade in grades %}
+            <tr>
+                <td>{{ grade['date'] }}</td>
+                <td>{{ grade['subject'] }}</td>
+                <td><strong>{{ grade['score'] }}</strong></td>
+                <td>{{ grade['comment'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Азырынча баалар киргизиле элек.</p>
+    {% endif %}
+
+    <a href="{{ url_for('parent') }}" class="back-btn">← Башкы баракчага кайтуу</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ата-эне кабинети</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+        }
+        .dashboard {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            background: #073b2b;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-links {
+            margin: 20px 0;
+        }
+        .nav-links a {
+            text-decoration: none;
+            background: #087653;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-right: 10px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .lesson-list {
+            list-style: none;
+            padding: 0;
+        }
+        .lesson-list li {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <div class="header">
+        <h1>👨‍👩‍👧‍👦 Ата-эне кабинети</h1>
+        <a href="{{ url_for('logout') }}" style="color: white;">Чыгуу</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="{{ url_for('parent_grades') }}">📊 Баалар журналы</a>
+        <a href="{{ url_for('quran_progress') }}">📖 Куран прогресси</a>
+    </div>
+
+    <div class="card">
+        <h2>📚 Сабактардын тизмеси</h2>
+        <ul class="lesson-list">
+            <li>
+                <span>1-сабак: Тажвид киришүү</span>
+                <a href="#">Көрүү</a>
+            </li>
+            <li>
+                <span>2-сабак: Нуния эрежелери</span>
+                <a href="{{ url_for('lesson_2') }}">Көрүү</a>
+            </li>
+            <li>
+                <span>3-сабак: Мад эрежелери</span>
+                <a href="#">Көрүү</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

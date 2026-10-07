@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+
+<html lang="ky">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Студенттин профили</title>
+
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f4f7f6;
+        color: #17372c;
+    }
+
+    .profile-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 28px;
+    }
+
+    /* HEADER */
+
+    .profile-header {
+        background: linear-gradient(135deg, #073b2b, #087653);
+        color: white;
+        border-radius: 20px;
+        padding: 28px 32px;
+        margin-bottom: 22px;
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .header-text h1 {
+        margin: 0 0 8px;
+        font-size: 29px;
+    }
+
+    .header-text p {
+        margin: 5px 0;
+        color: #c8e5da;
+        font-size: 14px;
+    }
+
+    .header-logo {
+        width: 72px;
+        height: 72px;
+        object-fit: contain;
+        background: white;
+        padding: 7px;
+        border-radius: 15px;
+    }
+
+    /* STUDENT INFO */
+
+    .student-card {
+        background: white;
+        border: 1px solid #e1e9e5;
+        border-radius: 18px;
+        padding: 25px;
+        margin-bottom: 22px;
+    }
+
+    .section-title {
+        margin: 0 0 20px;
+        color: #123c2e;
+        font-size: 20px;
+    }
+
+    .student-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .info-item {
+        background: #f7faf8;
+        border: 1px solid #e4ece8;
+        border-radius: 12px;
+        padding: 15px;
+    }
+
+    .info-label {
+        display: block;
+        color: #7a8982;
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+
+    .info-value {
+        color: #17372c;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    /* STATISTICS */
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 15px;
+        margin-bottom: 22px;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #e1e9e5;
+        border-radius: 16px;
+        padding: 18px;
+        text-align: center;
+    }
+
+    .stat-icon {
+        font-size: 25px;
+        margin-bottom: 7px;
+    }
+
+    .stat-number {
+        font-size: 24px;
+        font-weight: 800;
+        color: #087653;
+    }
+
+    .stat-label {
+        margin-top: 5px;
+        color: #74827c;
+        font-size: 12px;
+    }
+
+    /* TABLE */
+
+    .table-card {
+        background: white;
+        border: 1px solid #e1e9e5;
+        border-radius: 18px;
+        padding: 25px;
+        margin-bottom: 22px;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        min-width: 850px;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    th {
+        background: #f0f7f4;
+        color: #356051;
+        padding: 14px 12px;
+        text-align: left;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+
+    td {
+        padding: 14px 12px;
+        border-bottom: 1px solid #e8eeeb;
+        font-size: 13px;
+        vertical-align: middle;
+    }
+
+    tbody tr:hover {
+        background: #f8fbfa;
+    }
+
+    .attendance-present {
+        color: #15803d;
+        font-weight: 700;
+    }
+
+    .attendance-absent {
+        color: #dc2626;
+        font-weight: 700;
+    }
+
+    .grade {
+        display: inline-block;
+        min-width: 30px;
+        padding: 5px 8px;
+        border-radius: 7px;
+        background: #edf8f3;
+        color: #087653;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .empty {
+        text-align: center;
+        padding: 35px 15px;
+        color: #7d8983;
+    }
+
+    /* BUTTONS */
+
+    .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 18px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .button-primary {
+        background: #087653;
+        color: white;
+    }
+
+    .button-primary:hover {
+        background: #065f43;
+    }
+
+    .button-secondary {
+        background: #edf8f3;
+        color: #087653;
+    }
+
+    .button-secondary:hover {
+        background: #dff2e9;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 1000px) {
+
+        .stats-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+    }
+
+    @media (max-width: 700px) {
+
+        .profile-page {
+            padding: 15px;
+        }
+
+        .profile-header {
+            padding: 22px;
+        }
+
+        .header-text h1 {
+            font-size: 23px;
+        }
+
+        .header-logo {
+            width: 58px;
+            height: 58px;
+        }
+
+        .student-info {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .student-card,
+        .table-card {
+            padding: 18px;
+        }
+
+    }
+
+</style>
+
+</head>
+
+<body>
+
+<div class="profile-page">
+
+<!-- HEADER -->
+
+<header class="profile-header">
+
+    <div class="header-content">
+
+        <div class="header-text">
+
+            <h1>
+                👤 Студенттин профили
+            </h1>
+
+            <p>
+                Кыргызстан Ислам Университети
+            </p>
+
+            <p>
+                Ош колледжи — Куран жаттатуу борбору
+            </p>
+
+        </div>
+
+
+        <img
+            src="{{ url_for('static', filename='images/logo.png') }}"
+            alt="Куран жаттатуу борборунун логотиби"
+            class="header-logo"
+        >
+
+    </div>
+
+</header>
+
+
+<!-- STUDENT INFORMATION -->
+
+<section class="student-card">
+
+    <h2 class="section-title">
+        📋 Жеке маалымат
+    </h2>
+
+
+    <div class="student-info">
+
+
+        <div class="info-item">
+
+            <span class="info-label">
+                Аты-жөнү
+            </span>
+
+            <span class="info-value">
+                {{ student["name"] }}
+            </span>
+
+        </div>
+
+
+        <div class="info-item">
+
+            <span class="info-label">
+                Туулган жылы
+            </span>
+
+            <span class="info-value">
+                {{ student["birth_year"] or "—" }}
+            </span>
+
+        </div>
+
+
+        <div class="info-item">
+
+            <span class="info-label">
+                Курсу
+            </span>
+
+            <span class="info-value">
+                🎓 {{ student["course_name"] }}
+            </span>
+
+        </div>
+
+
+        <div class="info-item">
+
+            <span class="info-label">
+                Ата-энеси
+            </span>
+
+            <span class="info-value">
+                {{ student["parent_name"] or "—" }}
+            </span>
+
+        </div>
+
+
+        <div class="info-item">
+
+            <span class="info-label">
+                Телефон
+            </span>
+
+            <span class="info-value">
+                {{ student["phone"] or "—" }}
+            </span>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- STATISTICS -->
+
+<div class="stats-grid">
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📚
+        </div>
+
+        <div class="stat-number">
+            {{ total }}
+        </div>
+
+        <div class="stat-label">
+            Жалпы сабак
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            ✅
+        </div>
+
+        <div class="stat-number">
+            {{ present }}
+        </div>
+
+        <div class="stat-label">
+            Келген
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            ❌
+        </div>
+
+        <div class="stat-number">
+            {{ absent }}
+        </div>
+
+        <div class="stat-label">
+            Келбеген
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📈
+        </div>
+
+        <div class="stat-number">
+            {{ attendance_percent }}%
+        </div>
+
+        <div class="stat-label">
+            Катышуу
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            ⭐
+        </div>
+
+        <div class="stat-number">
+            {{ average_grade }}
+        </div>
+
+        <div class="stat-label">
+            Орточо баа
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- ATTENDANCE -->
+
+<section class="table-card">
+
+    <h2 class="section-title">
+        📊 Катышуу жана баалар
+    </h2>
+
+
+    {% if attendance %}
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>№</th>
+
+                    <th>Сабак</th>
+
+                    <th>Дата</th>
+
+                    <th>Катышуу</th>
+
+                    <th>Баа</th>
+
+                    <th>Эскертүү</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% for item in attendance %}
+
+                <tr>
+
+                    <td>
+                        {{ loop.index }}
+                    </td>
+
+
+                    <td>
+                        <strong>
+                            {{ item["subject_name"] or "—" }}
+                        </strong>
+                    </td>
+
+
+                    <td>
+                        {{ item["lesson_date"] }}
+                    </td>
+
+
+                    <td>
+
+                        {% if item["attendance"] == "Келди" %}
+
+                            <span class="attendance-present">
+                                ✅ {{ item["attendance"] }}
+                            </span>
+
+                        {% else %}
+
+                            <span class="attendance-absent">
+                                ❌ {{ item["attendance"] }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if item["grade"] %}
+
+                            <span class="grade">
+                                {{ item["grade"] }}
+                            </span>
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+                        {{ item["note"] or "—" }}
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {% else %}
+
+    <div class="empty">
+
+        📊 Азырынча катышуу жана баа маалыматтары жок.
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ACTIONS -->
+
+<div class="actions">
+
+    <a
+        href="/edit-student/{{ student['id'] }}"
+        class="button button-primary"
+    >
+        ✏️ Студентти оңдоо
+    </a>
+
+
+    <a
+        href="/students"
+        class="button button-secondary"
+    >
+        ← Студенттерге кайтуу
+    </a>
+
+
+    <a
+        href="/admin"
+        class="button button-secondary"
+    >
+        🏠 Админ панель
+    </a>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

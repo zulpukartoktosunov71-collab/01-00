@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Куран прогресси</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+        h1 {
+            color: #073b2b;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #edf7f3;
+            color: #073b2b;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            color: #087653;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📖 Куран жаттоо прогресси</h1>
+
+    {% if quran_progress %}
+    <table>
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Семестр</th>
+                <th>Жүз</th>
+                <th>Сүрө</th>
+                <th>Аяттар</th>
+                <th>Статус</th>
+                <th>Баасы</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in quran_progress %}
+            <tr>
+                <td>{{ item['progress_date'] }}</td>
+                <td>{{ item['semester'] }}-семестр</td>
+                <td>{{ item['juz_number'] }}-жүз</td>
+                <td>{{ item['surah_name'] or '—' }}</td>
+                <td>{{ item['start_ayah'] or '—' }} - {{ item['end_ayah'] or '—' }}</td>
+                <td>{{ item['status'] }}</td>
+                <td>{{ item['grade'] or '—' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Азырынча Куран тапшыруу маалыматы жок.</p>
+    {% endif %}
+
+    <a href="{{ url_for('parent') }}" class="back-btn">← Башкы баракчага кайтуу</a>
+</div>
+
+</body>
+</html>

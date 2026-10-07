@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+
+<html lang="ky"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Админ панели | Куран жаттатуу борбору</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f4f7f6;
+        color: #17251f;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .admin-layout {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 260px;
+        flex-shrink: 0;
+        background: linear-gradient(180deg, #073b2b, #0a5940);
+        color: white;
+        padding: 20px 15px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    .brand {
+        padding: 8px 10px 22px;
+        border-bottom: 1px solid rgba(255,255,255,.15);
+        margin-bottom: 18px;
+    }
+
+    .brand-logo {
+        width: 90px;
+        height: 90px;
+        object-fit: contain;
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .brand h2 {
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.4;
+    }
+
+    .brand p {
+        margin: 7px 0 0;
+        color: #b7d7cb;
+        font-size: 12px;
+    }
+
+    .sidebar-title {
+        color: #8fc7b2;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 8px 10px;
+    }
+
+    .sidebar-links a {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 12px 12px;
+        margin: 4px 0;
+        border-radius: 10px;
+        color: #d8eee5;
+        font-size: 14px;
+        transition: .2s;
+    }
+
+    .sidebar-links a:hover {
+        background: rgba(255,255,255,.12);
+        color: white;
+        transform: translateX(3px);
+    }
+
+    .sidebar-links .logout {
+        margin-top: 25px;
+        background: rgba(220,53,69,.16);
+        color: #ffb5bd;
+    }
+
+    .sidebar-links .logout:hover {
+        background: #dc3545;
+        color: white;
+    }
+
+    /* MAIN */
+    .main {
+        flex: 1;
+        min-width: 0;
+        padding: 28px;
+    }
+
+    .top-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .top-header h1 {
+        margin: 0;
+        font-size: 29px;
+        font-weight: 800;
+        color: #123c2e;
+    }
+
+    .top-header p {
+        margin: 6px 0 0;
+        color: #738078;
+        font-size: 14px;
+    }
+
+    .admin-badge {
+        background: white;
+        border: 1px solid #e1e9e5;
+        padding: 11px 16px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 700;
+        box-shadow: 0 5px 18px rgba(0,0,0,.04);
+    }
+
+    /* STATISTICS */
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 22px;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #e2e9e6;
+        border-radius: 17px;
+        padding: 20px;
+        box-shadow: 0 7px 24px rgba(18,63,47,.06);
+        transition: .2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .stat-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eaf7f1;
+        font-size: 21px;
+        margin-bottom: 13px;
+    }
+
+    .stat-card h3 {
+        margin: 0;
+        color: #718079;
+        font-size: 13px;
+    }
+
+    .stat-number {
+        margin-top: 7px;
+        font-size: 30px;
+        font-weight: 800;
+        color: #123c2e;
+    }
+
+    /* PANELS */
+    .panel {
+        background: white;
+        border: 1px solid #e2e9e6;
+        border-radius: 18px;
+        padding: 23px;
+        margin-bottom: 22px;
+        box-shadow: 0 7px 24px rgba(18,63,47,.05);
+    }
+
+    .panel-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .panel-title h2 {
+        margin: 0;
+        font-size: 19px;
+        color: #123c2e;
+    }
+
+    /* QUICK ACTIONS */
+    .actions {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 11px;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 48px;
+        padding: 10px;
+        border-radius: 11px;
+        background: #edf8f3;
+        color: #087653;
+        font-size: 13px;
+        font-weight: 700;
+        transition: .2s;
+        text-align: center;
+    }
+
+    .action-btn:hover {
+        background: #087653;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* QURAN */
+    .quran-box {
+        background: linear-gradient(135deg, #f0faf6, #ffffff);
+        border: 1px solid #dcece5;
+        border-radius: 15px;
+        padding: 20px;
+    }
+
+    .quran-number {
+        font-size: 35px;
+        font-weight: 800;
+        color: #087653;
+    }
+
+    .quran-text {
+        color: #738078;
+        font-size: 13px;
+        margin-top: 3px;
+    }
+
+    .progress-info {
+        display: flex;
+        justify-content: space-between;
+        margin: 18px 0 8px;
+        font-size: 13px;
+    }
+
+    .progress-bg {
+        height: 13px;
+        background: #e7efeb;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #087653, #31b584);
+        border-radius: 20px;
+    }
+
+    /* SEMESTERS */
+    .semester-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+
+    .semester-card {
+        padding: 19px;
+        background: #fbfcfc;
+        border: 1px solid #e2eae6;
+        border-radius: 15px;
+        transition: .2s;
+    }
+
+    .semester-card:hover {
+        background: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(18,63,47,.07);
+    }
+
+    .semester-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 13px;
+    }
+
+    .semester-top h3 {
+        margin: 0;
+        font-size: 16px;
+        color: #123c2e;
+    }
+
+    .semester-number {
+        width: 31px;
+        height: 31px;
+        border-radius: 9px;
+        background: #eaf7f1;
+        color: #087653;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+    }
+
+    .semester-card p {
+        margin: 7px 0;
+        color: #738079;
+        font-size: 13px;
+    }
+
+    .semester-card p strong {
+        color: #263d34;
+    }
+
+    .small-progress {
+        height: 8px;
+        margin-top: 13px;
+        background: #e7efeb;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .small-progress div {
+        height: 100%;
+        background: #14956c;
+        border-radius: 20px;
+    }
+
+    /* TABLE */
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 650px;
+    }
+
+    th {
+        background: #f0f7f4;
+        color: #356051;
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    th, td {
+        padding: 13px;
+        border-bottom: 1px solid #e8eeeb;
+        text-align: left;
+    }
+
+    td {
+        font-size: 13px;
+    }
+
+    tbody tr:hover {
+        background: #f8fbfa;
+    }
+
+    .name-cell {
+        font-weight: 700;
+        color: #183d30;
+    }
+
+    .login-cell {
+        color: #718079;
+        font-family: monospace;
+    }
+
+    .edit-btn,
+    .delete-btn,
+    .view-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        margin: 2px;
+    }
+
+    .edit-btn {
+        background: #2563eb;
+    }
+
+    .delete-btn {
+        background: #dc3545;
+    }
+
+    .view-btn {
+        background: #087653;
+    }
+
+    .empty {
+        padding: 25px;
+        text-align: center;
+        color: #89958f;
+        background: #f8faf9;
+        border-radius: 12px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+        .sidebar {
+            width: 225px;
+        }
+
+        .stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .actions {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 850px) {
+        .admin-layout {
+            display: block;
+        }
+
+        .sidebar {
+            position: relative;
+            width: 100%;
+            height: auto;
+        }
+
+        .sidebar-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .sidebar-links a {
+            margin: 0;
+        }
+
+        .main {
+            padding: 18px;
+        }
+
+        .semester-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .main {
+            padding: 12px;
+        }
+
+        .top-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .stats {
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .actions {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .semester-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <div class="brand">
+
+        <img
+            src="{{ url_for('static', filename='images/logo.png') }}"
+            alt="Логотип"
+            class="brand-logo"
+        >
+
+        <h2>
+            Кыргызстан Ислам Университети<br>
+            Ош колледжи<br>
+            Куран жаттатуу борбору
+        </h2>
+
+        <p>Башкаруу системасы</p>
+
+    </div>
+
+    <div class="sidebar-title">Башкы меню</div>
+
+    <div class="sidebar-links">
+
+        <a href="{{ url_for('admin') }}">
+            🏠 <span>Башкы бет</span>
+        </a>
+
+        <a href="{{ url_for('students') }}">
+            👨‍🎓 <span>Студенттер</span>
+        </a>
+
+        <a href="{{ url_for('parents') }}">
+            👨‍👩‍👦 <span>Ата-энелер</span>
+        </a>
+
+        <a href="{{ url_for('add_teacher') }}">
+            👨‍🏫 <span>Мугалим кошуу</span>
+        </a>
+
+        <a href="{{ url_for('assign_teacher') }}">
+            📚 <span>Сабак дайындоо</span>
+        </a>
+
+        <a href="{{ url_for('quran_sections') }}">
+            📖 <span>Куран бөлүмдөрү</span>
+        </a>
+
+        <a class="logout" href="{{ url_for('logout') }}">
+            🚪 <span>Системадан чыгуу</span>
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- HEADER -->
+    <div class="top-header">
+
+        <div>
+            <h1>Кош келиңиз, админ! 👋</h1>
+
+            <p>
+                Куран жаттатуу борборунун жалпы башкаруу панели
+            </p>
+        </div>
+
+        <div class="admin-badge">
+            🛡️ Администратор
+        </div>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+    <div class="stats">
+
+        <div class="stat-card">
+            <div class="stat-icon">👨‍🏫</div>
+
+            <h3>Мугалимдер</h3>
+
+            <div class="stat-number">
+                {{ teacher_count }}
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">👨‍🎓</div>
+
+            <h3>Студенттер</h3>
+
+            <div class="stat-number">
+                {{ student_count }}
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">👨‍👩‍👦</div>
+
+            <h3>Ата-энелер</h3>
+
+            <div class="stat-number">
+                {{ parent_count }}
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">📚</div>
+
+            <h3>Дайындалган сабактар</h3>
+
+            <div class="stat-number">
+                {{ assignment_count }}
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- QUICK ACTIONS -->
+    <section class="panel">
+
+        <div class="panel-title">
+            <h2>⚡ Тез аракеттер</h2>
+        </div>
+
+        <div class="actions">
+
+            <a class="action-btn" href="{{ url_for('add_teacher') }}">
+                👨‍🏫 Мугалим кошуу
+            </a>
+
+            <a class="action-btn" href="{{ url_for('students') }}">
+                👨‍🎓 Студенттер
+            </a>
+
+            <a class="action-btn" href="{{ url_for('parents') }}">
+                👨‍👩‍👦 Ата-энелер
+            </a>
+
+            <a class="action-btn" href="{{ url_for('assign_teacher') }}">
+                📚 Сабак дайындоо
+            </a>
+
+            <a class="action-btn" href="{{ url_for('quran_sections') }}">
+                📖 Куран бөлүмдөрү
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- GENERAL INFORMATION -->
+    <section class="panel">
+
+        <div class="panel-title">
+            <h2>📊 Жалпы маалымат</h2>
+        </div>
+
+        <div class="quran-box">
+
+            <div class="quran-number">
+                {{ quran_completed }}
+            </div>
+
+            <div class="quran-text">
+                Жатталган Куран бөлүктөрү
+            </div>
+
+            <div class="progress-info">
+                <span>Куран жаттоо көрсөткүчү</span>
+                <strong>
+                    {{ quran_completed }} бөлүк
+                </strong>
+            </div>
+
+            <div class="progress-bg">
+
+                {% set quran_percent = ((quran_completed / 30) * 100) if quran_completed else 0 %}
+
+                {% if quran_percent > 100 %}
+                    {% set quran_percent = 100 %}
+                {% endif %}
+
+                <div
+                    class="progress-fill"
+                    style="width: {{ quran_percent }}%;"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- SEMESTERS -->
+    <section class="panel">
+
+        <div class="panel-title">
+            <h2>📖 6 семестр боюнча Куран жаттоо</h2>
+        </div>
+
+        <div class="semester-grid">
+
+            {% for item in quran_semester_stats %}
+
+                <div class="semester-card">
+
+                    <div class="semester-top">
+
+                        <h3>
+                            {{ item.semester }}-семестр
+                        </h3>
+
+                        <div class="semester-number">
+                            {{ item.semester }}
+                        </div>
+
+                    </div>
+
+                    <p>
+                        Максат:
+                        <strong>
+                            {{ item.goal }} жуз
+                        </strong>
+                    </p>
+
+                    <p>
+                        Жатталган:
+                        <strong>
+                            {{ item.completed }} жуз
+                        </strong>
+                    </p>
+
+                    {% set percent = ((item.completed / item.goal) * 100) if item.goal else 0 %}
+
+                    {% if percent > 100 %}
+                        {% set percent = 100 %}
+                    {% endif %}
+
+                    <div class="small-progress">
+                        <div style="width: {{ percent }}%;"></div>
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- TEACHERS -->
+    <section class="panel">
+
+        <div class="panel-title">
+            <h2>👨‍🏫 Мугалимдер</h2>
+
+            <a
+                class="view-btn"
+                href="{{ url_for('add_teacher') }}"
+            >
+                + Мугалим кошуу
+            </a>
+        </div>
+
+        {% if teachers %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>#</th>
+                            <th>Аты-жөнү</th>
+                            <th>Логин</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for teacher in teachers %}
+
+                            <tr>
+
+                                <td>
+                                    {{ loop.index }}
+                                </td>
+
+                                <td class="name-cell">
+                                    {{ teacher.name }}
+                                </td>
+
+                                <td class="login-cell">
+                                    {{ teacher.username }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                Азырынча мугалимдер жок.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ASSIGNMENTS -->
+    <section class="panel">
+
+        <div class="panel-title">
+
+            <h2>📚 Сабак дайындоолор</h2>
+
+            <a
+                class="view-btn"
+                href="{{ url_for('assign_teacher') }}"
+            >
+                + Сабак дайындоо
+            </a>
+
+        </div>
+
+        {% if assignments %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>#</th>
+                            <th>Мугалим</th>
+                            <th>Курс</th>
+                            <th>Сабак</th>
+                            <th>Аракет</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for assignment in assignments %}
+
+                            <tr>
+
+                                <td>
+                                    {{ loop.index }}
+                                </td>
+
+                                <td class="name-cell">
+                                    {{ assignment.teacher_name }}
+                                </td>
+
+                                <td>
+                                    {{ assignment.course_name }}
+                                </td>
+
+                                <td>
+                                    {{ assignment.subject_name }}
+                                </td>
+
+                                <td>
+
+                                    <a
+                                        class="edit-btn"
+                                        href="{{ url_for('edit_assignment', assignment_id=assignment.id) }}"
+                                    >
+                                        ✏️ Оңдоо
+                                    </a>
+
+                                    <a
+                                        class="delete-btn"
+                                        href="{{ url_for('delete_assignment', assignment_id=assignment.id) }}"
+                                        onclick="return confirm('Бул дайындоону өчүрүүнү каалайсызбы?');"
+                                    >
+                                        🗑️ Өчүрүү
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                Азырынча сабак дайындоолор жок.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- LESSON INFORMATION -->
+    <section class="panel">
+
+        <div class="panel-title">
+
+            <h2>📝 Сабак журналы</h2>
+
+        </div>
+
+        <div class="quran-box">
+
+            <div class="quran-number">
+                {{ lesson_count }}
+            </div>
+
+            <div class="quran-text">
+                Системага киргизилген жалпы сабактардын саны
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- COURSES -->
+    <section class="panel">
+
+        <div class="panel-title">
+            <h2>🎓 Курстар</h2>
+        </div>
+
+        {% if courses %}
+
+            <div class="actions">
+
+                {% for course in courses %}
+
+                    <div class="action-btn">
+                        🎓 {{ course.name }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                Курстар табылган жок.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+</div>
+
+</body> </html>

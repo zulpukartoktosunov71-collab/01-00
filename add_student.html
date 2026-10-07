@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Студент кошуу | Куран жаттатуу борбору</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #f4f7f6; color: #17372c; }
+        .page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 30px 15px; }
+        .card { width: 100%; max-width: 650px; background: white; border: 1px solid #e1e9e5; border-radius: 22px; padding: 32px; }
+        .header { text-align: center; margin-bottom: 25px; }
+        .logo { width: 90px; height: 90px; object-fit: contain; background: white; border: 1px solid #e1e9e5; border-radius: 18px; padding: 7px; margin-bottom: 14px; }
+        .header h1 { margin: 0 0 8px; color: #123c2e; font-size: 27px; }
+        .header p { margin: 0; color: #78867f; font-size: 14px; }
+        .institution { margin-top: 7px !important; color: #087653 !important; font-weight: 600; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 7px; color: #355b4e; font-size: 13px; font-weight: 700; }
+        input, select { width: 100%; padding: 13px 14px; border: 1px solid #d6e2dd; border-radius: 10px; background: #fff; color: #17372c; font-family: inherit; font-size: 14px; outline: none; }
+        input:focus, select:focus { border-color: #087653; box-shadow: 0 0 0 3px rgba(8, 118, 83, .08); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .save-button { width: 100%; margin-top: 8px; padding: 14px; border: none; border-radius: 10px; background: #087653; color: white; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+        .save-button:hover { background: #065e43; }
+        .message { margin-top: 18px; padding: 13px 15px; border-radius: 10px; background: #edf8f3; border: 1px solid #cde8dc; color: #087653; font-size: 14px; }
+        .back { display: block; margin-top: 18px; text-align: center; padding: 12px; border-radius: 10px; background: #f0f7f4; color: #087653; text-decoration: none; font-size: 14px; font-weight: 700; }
+        .back:hover { background: #e2f2eb; }
+        .info-box { margin-top: 20px; padding: 15px; border-radius: 12px; background: #f8faf9; border: 1px solid #e3ebe7; }
+        .info-box strong { color: #123c2e; font-size: 13px; }
+        .info-box p { margin: 6px 0 0; color: #77867f; font-size: 12px; line-height: 1.5; }
+        @media (max-width: 600px) { .page { padding: 15px; } .card { padding: 22px 18px; border-radius: 18px; } .form-grid { grid-template-columns: 1fr; gap: 0; } .header h1 { font-size: 23px; } .logo { width: 75px; height: 75px; } }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="card">
+        <div class="header">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Логотип" class="logo">
+            <h1>👨‍🎓 Студент кошуу</h1>
+            <p>Жаңы студенттин маалыматтарын киргизиңиз</p>
+            <p class="institution">Кыргызстан Ислам Университети — Ош колледжи</p>
+        </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label>👤 Студенттин аты-жөнү</label>
+                <input type="text" name="name" placeholder="Мисалы: Абдуллах Абдиев" required>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>🎂 Туулган жылы</label>
+                    <input type="number" name="birth_year" placeholder="Мисалы: 2010" min="1950" max="2026" required>
+                </div>
+                <div class="form-group">
+                    <label>🎓 Курсу</label>
+                    <select name="course_id" required>
+                        <option value="">-- Курсту тандаңыз --</option>
+                        {% for course in courses %}
+                            <option value="{{ course['id'] }}">{{ course['name'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>👨‍👩‍👦 Ата-энесинин аты</label>
+                <input type="text" name="parent_name" placeholder="Мисалы: Абдиев Абдулла" required>
+            </div>
+
+            <div class="form-group">
+                <label>📞 Телефон номери</label>
+                <input type="tel" name="phone" placeholder="Мисалы: 0700 123 456" required>
+            </div>
+
+            <button type="submit" class="save-button">💾 Студентти сактоо</button>
+        </form>
+
+        {% if message %}
+            <div class="message">✅ {{ message }}</div>
+        {% endif %}
+
+        <div class="info-box">
+            <strong>📌 Эскертүү</strong>
+            <p>Студентти сактагандан кийин анын профилинен катышуусун, бааларын жана Куран жаттоо прогрессин көзөмөлдөөгө болот.</p>
+        </div>
+
+        <a href="{{ url_for('admin') }}" class="back">← Админ панелге кайтуу</a>
+    </div>
+</div>
+</body>
+</html>
